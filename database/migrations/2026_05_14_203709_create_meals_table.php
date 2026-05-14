@@ -12,8 +12,27 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('meals', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
+           $table->id();
+
+$table->foreignId('user_id')
+      ->constrained()
+      ->onDelete('cascade');
+
+$table->string('food_name');
+
+$table->string('meal_type');
+
+$table->integer('calories');
+
+$table->float('protein');
+
+$table->float('carbs');
+
+$table->float('fat');
+
+$table->date('consumed_at');
+
+$table->timestamps();
         });
     }
 
