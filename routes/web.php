@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\FoodController;
+use App\Http\Controllers\MealController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -28,4 +29,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/food-search',
         [FoodController::class, 'search']);
 });
+
+Route::post('/meals',
+    [MealController::class, 'store']);
+
 require __DIR__.'/auth.php';

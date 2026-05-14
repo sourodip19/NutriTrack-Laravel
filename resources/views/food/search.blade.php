@@ -362,6 +362,28 @@ suggestions.classList.add('hidden');
 
                             </div>
 
+                            <button
+
+    onclick='addMeal(${JSON.stringify(food)})'
+
+    class="mt-6 w-full
+
+           bg-green-500
+           hover:bg-green-600
+
+           text-white
+
+           py-3 rounded-xl
+
+           font-semibold
+
+           transition"
+
+>
+
+    + Add Meal
+
+</button>
                         </div>
 
                     </div>
@@ -378,6 +400,59 @@ document.addEventListener('click', function (e) {
         suggestions.classList.add('hidden');
     }
 });
+async function addMeal(food) {
+
+    const mealType = prompt(
+
+        'Enter meal type:\\nBreakfast / Lunch / Dinner / Snacks'
+    );
+
+    if (!mealType) return;
+
+    try {
+
+        const response = await fetch('/meals', {
+
+            method: 'POST',
+
+            headers: {
+
+                'Content-Type': 'application/json',
+
+                'X-CSRF-TOKEN':
+                    document.querySelector(
+                        'meta[name=\"csrf-token\"]'
+                    ).content
+            },
+
+            body: JSON.stringify({
+
+                food_name: food.name,
+
+                meal_type: mealType,
+
+                calories: food.calories,
+
+                protein: food.protein,
+
+                carbs: food.carbs,
+
+                fat: food.fat,
+            })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+
+            alert('Meal Added Successfully ✅');
+        }
+
+    } catch (error) {
+
+        console.error(error);
+    }
+}
     </script>
 
 </x-app-layout>
