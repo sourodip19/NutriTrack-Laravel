@@ -4,14 +4,17 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\FoodController;
 use App\Http\Controllers\MealController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\WeightController;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard',
+    [DashboardController::class, 'index'])
+    ->middleware(['auth', 'verified'])
+    ->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -33,4 +36,12 @@ Route::middleware('auth')->group(function () {
 Route::post('/meals',
     [MealController::class, 'store']);
 
+    Route::post('/weight-log',
+    [WeightController::class, 'store']);
+
+    Route::post(
+    '/manual-meal',
+
+    [MealController::class, 'store']
+);
 require __DIR__.'/auth.php';

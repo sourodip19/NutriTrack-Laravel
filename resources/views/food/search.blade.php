@@ -404,7 +404,7 @@ async function addMeal(food) {
 
     const mealType = prompt(
 
-        'Enter meal type:\\nBreakfast / Lunch / Dinner / Snacks'
+        'Enter meal type:\\nBreakfast / Lunch / Dinner / Snack'
     );
 
     if (!mealType) return;

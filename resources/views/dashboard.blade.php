@@ -1,167 +1,954 @@
+
 <x-app-layout>
 
-    <div class="py-10">
+    @php
 
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+        $user = auth()->user();
 
-            <h1 class="text-3xl font-bold mb-8
-                       text-gray-900 dark:text-white">
+        $heightInMeters = $user->height / 100;
 
-                Welcome Back,
-                {{ auth()->user()->name }} 👋
+        $bmi = ($currentWeight ?? $user->weight)
+            / ($heightInMeters * $heightInMeters);
 
-            </h1>
+        $caloriesPercentage =
+            $targetCalories > 0
+            ? min(($totalCalories / $targetCalories) * 100, 100)
+            : 0;
 
-            <!-- GRID -->
+        $proteinPercentage =
+            $targetProtein > 0
+            ? min(($totalProtein / $targetProtein) * 100, 100)
+            : 0;
 
-            <div class="grid grid-cols-1 md:grid-cols-2
-                        lg:grid-cols-3 gap-6">
+        $carbsPercentage =
+            $targetCarbs > 0
+            ? min(($totalCarbs / $targetCarbs) * 100, 100)
+            : 0;
 
-                <!-- BMI -->
+        $fatPercentage =
+            $targetFat > 0
+            ? min(($totalFat / $targetFat) * 100, 100)
+            : 0;
 
-                <div class="bg-white dark:bg-gray-800
-                            shadow rounded-2xl p-6">
+        $mealSections = [
 
-                    <h2 class="text-lg font-semibold
-                               text-gray-700 dark:text-gray-200">
+            [
+                'title' => 'Breakfast',
+                'emoji' => '🍳',
+                'meals' => $breakfastMeals,
+                'empty' => 'No breakfast meals added.',
+            ],
 
-                        BMI
+            [
+                'title' => 'Lunch',
+                'emoji' => '🍛',
+                'meals' => $lunchMeals,
+                'empty' => 'No lunch meals added.',
+            ],
 
-                    </h2>
+            [
+                'title' => 'Dinner',
+                'emoji' => '🍽️',
+                'meals' => $dinnerMeals,
+                'empty' => 'No dinner meals added.',
+            ],
 
-                    <p class="text-4xl font-bold mt-4
-                              text-green-600">
+            [
+                'title' => 'Snacks',
+                'emoji' => '🍪',
+                'meals' => $snackMeals,
+                'empty' => 'No snacks added.',
+            ],
+        ];
 
-                        {{ auth()->user()->bmi ?? '--' }}
+        $macroCards = [
 
-                    </p>
+            [
+                'title' => 'Calories',
+                'value' => round($totalCalories),
+                'goal' => round($targetCalories),
+                'unit' => '',
+                'percentage' => round($caloriesPercentage),
+                'color' => 'red',
+            ],
 
-                    <p class="mt-2 text-sm
-                              text-gray-500 dark:text-gray-400">
+            [
+                'title' => 'Protein',
+                'value' => round($totalProtein, 1),
+                'goal' => round($targetProtein),
+                'unit' => 'g',
+                'percentage' => round($proteinPercentage),
+                'color' => 'blue',
+            ],
 
-                        {{ auth()->user()->bmi_status ?? 'No Data' }}
+            [
+                'title' => 'Carbs',
+                'value' => round($totalCarbs, 1),
+                'goal' => round($targetCarbs),
+                'unit' => 'g',
+                'percentage' => round($carbsPercentage),
+                'color' => 'yellow',
+            ],
 
-                    </p>
+            [
+                'title' => 'Fat',
+                'value' => round($totalFat, 1),
+                'goal' => round($targetFat),
+                'unit' => 'g',
+                'percentage' => round($fatPercentage),
+                'color' => 'green',
+            ],
+        ];
+
+    @endphp
+
+    <div class="py-8">
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+            <!-- Header -->
+
+            <div class="mb-8">
+
+                <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+
+                    <div>
+
+                        <h1
+                            class="
+                                text-4xl
+                                font-bold
+                                text-gray-900 dark:text-white
+                            "
+                        >
+
+                            Today's Nutrition Dashboard 📊
+
+                        </h1>
+
+                        <p
+                            class="
+                                mt-2
+                                text-gray-600 dark:text-gray-400
+                            "
+                        >
+
+                            Track meals, body metrics, nutrition progress and fitness goals.
+
+                        </p>
+
+                    </div>
+
+                    <!-- Quick Actions -->
+
+                    <div class="flex flex-wrap gap-3">
+
+                        <a
+                            href="/food-search"
+
+                            class="
+                                px-5 py-3
+                                bg-green-500 hover:bg-green-600
+                                text-white
+                                rounded-2xl
+                                font-semibold
+                                shadow-lg
+                                transition
+                            "
+                        >
+
+                            🔍 Search Food
+
+                        </a>
+
+                        <button
+                            onclick="document.getElementById('manualMeal').scrollIntoView({ behavior: 'smooth' })"
+
+                            class="
+                                px-5 py-3
+                                bg-blue-500 hover:bg-blue-600
+                                text-white
+                                rounded-2xl
+                                font-semibold
+                                shadow-lg
+                                transition
+                            "
+                        >
+
+                            🍽️ Add Meal
+
+                        </button>
+
+                        <button
+                            onclick="document.getElementById('weightTracker').scrollIntoView({ behavior: 'smooth' })"
+
+                            class="
+                                px-5 py-3
+                                bg-purple-500 hover:bg-purple-600
+                                text-white
+                                rounded-2xl
+                                font-semibold
+                                shadow-lg
+                                transition
+                            "
+                        >
+
+                            ⚖️ Log Weight
+
+                        </button>
+
+                    </div>
+
                 </div>
 
-                <!-- Maintenance Calories -->
+            </div>
 
-                <div class="bg-white dark:bg-gray-800
-                            shadow rounded-2xl p-6">
+            <!-- Hero Summary -->
 
-                    <h2 class="text-lg font-semibold
-                               text-gray-700 dark:text-gray-200">
+            <div
+                class="
+                    bg-white dark:bg-gray-800
+                    rounded-3xl
+                    shadow-2xl
+                    p-8
+                    mb-8
+                "
+            >
 
-                        Maintenance Calories
+                <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8">
 
-                    </h2>
+                    <div>
 
-                    <p class="text-4xl font-bold mt-4
-                              text-blue-600">
+                        <p class="text-gray-500 dark:text-gray-400 text-lg">
 
-                        {{ auth()->user()->maintenance_calories ?? '--' }}
+                            Daily Calories
 
-                    </p>
+                        </p>
 
-                    <p class="mt-2 text-sm
-                              text-gray-500 dark:text-gray-400">
+                        <h2
+                            class="
+                                mt-3
+                                text-5xl
+                                font-bold
+                                text-gray-900 dark:text-white
+                            "
+                        >
 
-                        kcal/day
+                            {{ round($totalCalories) }}
 
-                    </p>
+                            <span class="text-2xl text-gray-400">
+
+                                / {{ round($targetCalories) }} kcal
+
+                            </span>
+
+                        </h2>
+
+                        <div
+                            class="
+                                mt-6
+                                w-full lg:w-[500px]
+                                h-4
+                                bg-gray-200 dark:bg-gray-700
+                                rounded-full
+                                overflow-hidden
+                            "
+                        >
+
+                            <div
+                                class="
+                                    h-full
+                                    bg-gradient-to-r
+                                    from-red-500 to-orange-400
+                                    rounded-full
+                                "
+
+                                style="width: {{ $caloriesPercentage }}%;"
+                            ></div>
+
+                        </div>
+
+                    </div>
+
+                    <div
+                        class="
+                            flex items-center justify-center
+                            w-40 h-40
+                            rounded-full
+                            border-[12px]
+                            border-red-500
+                            text-center
+                        "
+                    >
+
+                        <div>
+
+                            <p class="text-4xl font-bold text-red-500">
+
+                                {{ round($caloriesPercentage) }}%
+
+                            </p>
+
+                            <p class="text-gray-400 text-sm mt-1">
+
+                                completed
+
+                            </p>
+
+                        </div>
+
+                    </div>
+
                 </div>
 
-                <!-- Goal Calories -->
+            </div>
 
-                <div class="bg-white dark:bg-gray-800
-                            shadow rounded-2xl p-6">
+            <!-- Macro Cards -->
 
-                    <h2 class="text-lg font-semibold
-                               text-gray-700 dark:text-gray-200">
+            <div
+                class="
+                    grid grid-cols-1
+                    sm:grid-cols-2
+                    xl:grid-cols-4
+                    gap-5
+                    mb-8
+                "
+            >
 
-                        Goal Calories
+                @foreach($macroCards as $card)
 
-                    </h2>
+                    <div
+                        class="
+                            bg-white dark:bg-gray-800
+                            rounded-2xl
+                            shadow-xl
+                            p-6
+                        "
+                    >
 
-                    <p class="text-4xl font-bold mt-4
-                              text-red-500">
+                        <div class="flex justify-between items-start">
 
-                        {{ auth()->user()->daily_calorie_goal ?? '--' }}
+                            <div>
 
-                    </p>
+                                <p class="text-gray-500 dark:text-gray-400">
 
-                    <p class="mt-2 text-sm
-                              text-gray-500 dark:text-gray-400">
+                                    {{ $card['title'] }}
 
-                        kcal/day
+                                </p>
 
-                    </p>
-                </div>
+                                <h3
+                                    class="
+                                        mt-4
+                                        text-4xl
+                                        font-bold
+                                        text-{{ $card['color'] }}-500
+                                    "
+                                >
 
-                <!-- Current Weight -->
+                                    {{ $card['value'] }}{{ $card['unit'] }}
 
-                <div class="bg-white dark:bg-gray-800
-                            shadow rounded-2xl p-6">
+                                </h3>
 
-                    <h2 class="text-lg font-semibold
-                               text-gray-700 dark:text-gray-200">
+                                <p class="text-gray-400 mt-1">
+
+                                    Goal: {{ $card['goal'] }}{{ $card['unit'] }}
+
+                                </p>
+
+                            </div>
+
+                            <div
+                                class="
+                                    text-{{ $card['color'] }}-500
+                                    font-bold
+                                    text-lg
+                                "
+                            >
+
+                                {{ $card['percentage'] }}%
+
+                            </div>
+
+                        </div>
+
+                        <div
+                            class="
+                                mt-6
+                                h-3
+                                bg-gray-200 dark:bg-gray-700
+                                rounded-full
+                                overflow-hidden
+                            "
+                        >
+
+                            <div
+                                class="
+                                    h-full
+                                    bg-{{ $card['color'] }}-500
+                                    rounded-full
+                                "
+
+                                style="width: {{ $card['percentage'] }}%;"
+                            ></div>
+
+                        </div>
+
+                    </div>
+
+                @endforeach
+
+            </div>
+
+            <!-- Body Metrics -->
+
+            <div
+                class="
+                    grid grid-cols-1
+                    sm:grid-cols-2
+                    lg:grid-cols-3
+                    gap-5
+                    mb-8
+                "
+            >
+
+                <div
+                    class="
+                        bg-white dark:bg-gray-800
+                        rounded-2xl
+                        shadow-xl
+                        p-6
+                    "
+                >
+
+                    <p class="text-gray-500 dark:text-gray-400">
 
                         Current Weight
 
-                    </h2>
-
-                    <p class="text-4xl font-bold mt-4
-                              text-purple-500">
-
-                        {{ auth()->user()->weight ?? '--' }} kg
-
                     </p>
-                </div>
 
-                <!-- Target Weight -->
+                    <h2 class="mt-4 text-4xl font-bold text-blue-500">
 
-                <div class="bg-white dark:bg-gray-800
-                            shadow rounded-2xl p-6">
+                        {{ $currentWeight ?? $user->weight }}
 
-                    <h2 class="text-lg font-semibold
-                               text-gray-700 dark:text-gray-200">
+                        <span class="text-xl">
 
-                        Target Weight
+                            kg
+
+                        </span>
 
                     </h2>
 
-                    <p class="text-4xl font-bold mt-4
-                              text-yellow-500">
-
-                        {{ auth()->user()->target_weight ?? '--' }} kg
-
-                    </p>
                 </div>
 
-                <!-- Target Date -->
+                <div
+                    class="
+                        bg-white dark:bg-gray-800
+                        rounded-2xl
+                        shadow-xl
+                        p-6
+                    "
+                >
 
-                <div class="bg-white dark:bg-gray-800
-                            shadow rounded-2xl p-6">
+                    <p class="text-gray-500 dark:text-gray-400">
 
-                    <h2 class="text-lg font-semibold
-                               text-gray-700 dark:text-gray-200">
+                        Height
 
-                        Target Date
+                    </p>
+
+                    <h2 class="mt-4 text-4xl font-bold text-green-500">
+
+                        {{ $user->height }}
+
+                        <span class="text-xl">
+
+                            cm
+
+                        </span>
 
                     </h2>
 
-                    <p class="text-2xl font-bold mt-4
-                              text-indigo-500">
+                </div>
 
-                        {{ auth()->user()->target_date ?? '--' }}
+                <div
+                    class="
+                        bg-white dark:bg-gray-800
+                        rounded-2xl
+                        shadow-xl
+                        p-6
+                    "
+                >
+
+                    <p class="text-gray-500 dark:text-gray-400">
+
+                        BMI Score
 
                     </p>
+
+                    <h2 class="mt-4 text-4xl font-bold text-purple-500">
+
+                        {{ round($bmi, 1) }}
+
+                    </h2>
+
                 </div>
+
+            </div>
+
+            <!-- Insights -->
+
+            <div
+                class="
+                    grid grid-cols-1
+                    md:grid-cols-2
+                    xl:grid-cols-4
+                    gap-5
+                    mb-8
+                "
+            >
+
+                <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
+
+                    <p class="text-gray-400 text-sm">
+
+                        Avg Daily Calories
+
+                    </p>
+
+                    <h2 class="text-3xl font-bold text-red-500 mt-3">
+
+                        {{ round(collect($calorieData)->avg()) }}
+
+                    </h2>
+
+                </div>
+
+                <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
+
+                    <p class="text-gray-400 text-sm">
+
+                        Weight Trend
+
+                    </p>
+
+                    <h2 class="text-3xl font-bold text-blue-500 mt-3">
+
+                        {{ $weightData[count($weightData) - 1] ?? $currentWeight }} kg
+
+                    </h2>
+
+                </div>
+
+                <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
+
+                    <p class="text-gray-400 text-sm">
+
+                        Protein Completion
+
+                    </p>
+
+                    <h2 class="text-3xl font-bold text-green-500 mt-3">
+
+                        {{ round($proteinPercentage) }}%
+
+                    </h2>
+
+                </div>
+
+                <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
+
+                    <p class="text-gray-400 text-sm">
+
+                        Weekly Streak
+
+                    </p>
+
+                    <h2 class="text-3xl font-bold text-yellow-500 mt-3">
+
+                        {{ count(array_filter($calorieData)) }} Days
+
+                    </h2>
+
+                </div>
+
+            </div>
+
+            <!-- Weight Logger -->
+
+            <div
+                id="weightTracker"
+
+                class="
+                    bg-white dark:bg-gray-800
+                    rounded-3xl
+                    shadow-xl
+                    p-6
+                    mb-8
+                "
+            >
+
+                <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+
+                    <div>
+
+                        <h2
+                            class="
+                                text-2xl
+                                font-bold
+                                text-gray-900 dark:text-white
+                            "
+                        >
+
+                            Log Today's Weight ⚖️
+
+                        </h2>
+
+                        <p class="text-gray-500 dark:text-gray-400 mt-2">
+
+                            Keep track of your body progress.
+
+                        </p>
+
+                    </div>
+
+                    <form
+                        action="/weight-log"
+                        method="POST"
+
+                        class="
+                            flex flex-col sm:flex-row
+                            gap-4
+                            w-full lg:w-auto
+                        "
+                    >
+
+                        @csrf
+
+                        <input
+                            type="number"
+                            step="0.1"
+                            name="weight"
+                            placeholder="Today's weight"
+                            required
+
+                            class="
+                                px-5 py-3
+                                rounded-2xl
+                                bg-gray-100 dark:bg-gray-700
+                                text-gray-900 dark:text-white
+                                border-0
+                                focus:ring-2
+                                focus:ring-purple-500
+                            "
+                        >
+
+                        <button
+                            type="submit"
+
+                            class="
+                                px-6 py-3
+                                bg-purple-500 hover:bg-purple-600
+                                text-white
+                                rounded-2xl
+                                font-semibold
+                                transition
+                            "
+                        >
+
+                            Save Weight
+
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+            <!-- Manual Meal Entry -->
+
+            <div
+                id="manualMeal"
+
+                class="
+                    bg-white dark:bg-gray-800
+                    rounded-3xl
+                    shadow-xl
+                    p-6
+                    mb-8
+                "
+            >
+
+                <div class="mb-6">
+
+                    <h2
+                        class="
+                            text-2xl
+                            font-bold
+                            text-gray-900 dark:text-white
+                        "
+                    >
+
+                        Add Custom Meal 🍽️
+
+                    </h2>
+
+                    <p class="text-gray-500 dark:text-gray-400 mt-2">
+
+                        Add meals manually if you already know the nutrition values.
+
+                    </p>
+
+                </div>
+
+                <form
+                    action="/manual-meal"
+                    method="POST"
+
+                    class="
+                        grid grid-cols-1
+                        md:grid-cols-2
+                        xl:grid-cols-6
+                        gap-4
+                    "
+                >
+
+                    @csrf
+
+                    <input
+                        type="text"
+                        name="food_name"
+                        placeholder="Food Name"
+                        required
+
+                        class="dashboard-input xl:col-span-2"
+                    >
+
+                    <input
+                        type="number"
+                        name="calories"
+                        placeholder="Calories"
+                        required
+
+                        class="dashboard-input"
+                    >
+
+                    <input
+                        type="number"
+                        step="0.1"
+                        name="protein"
+                        placeholder="Protein"
+                        required
+
+                        class="dashboard-input"
+                    >
+
+                    <input
+                        type="number"
+                        step="0.1"
+                        name="carbs"
+                        placeholder="Carbs"
+                        required
+
+                        class="dashboard-input"
+                    >
+
+                    <input
+                        type="number"
+                        step="0.1"
+                        name="fat"
+                        placeholder="Fat"
+                        required
+
+                        class="dashboard-input"
+                    >
+
+                    <select
+                        name="meal_type"
+
+                        class="dashboard-input"
+                    >
+
+                        <option value="breakfast">
+
+                            Breakfast
+
+                        </option>
+
+                        <option value="lunch">
+
+                            Lunch
+
+                        </option>
+
+                        <option value="dinner">
+
+                            Dinner
+
+                        </option>
+
+                        <option value="snack">
+
+                            Snack
+
+                        </option>
+
+                    </select>
+
+                    <button
+                        type="submit"
+
+                        class="
+                            xl:col-span-6
+                            py-4
+                            bg-green-500 hover:bg-green-600
+                            text-white
+                            rounded-2xl
+                            font-bold
+                            transition
+                        "
+                    >
+
+                        Add Meal
+
+                    </button>
+
+                </form>
+
+            </div>
+
+            <!-- Meal Sections -->
+
+            <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+
+                @foreach($mealSections as $section)
+
+                    <div
+                        class="
+                            bg-white dark:bg-gray-800
+                            rounded-3xl
+                            shadow-xl
+                            p-6
+                        "
+                    >
+
+                        <div class="flex items-center justify-between mb-6">
+
+                            <h2
+                                class="
+                                    text-2xl
+                                    font-bold
+                                    text-gray-900 dark:text-white
+                                "
+                            >
+
+                                {{ $section['title'] }} {{ $section['emoji'] }}
+
+                            </h2>
+
+                            <span class="text-gray-400 text-sm">
+
+                                {{ $section['meals']->count() }} meals
+
+                            </span>
+
+                        </div>
+
+                        @forelse($section['meals'] as $meal)
+
+                            <div
+                                class="
+                                    flex items-center justify-between
+                                    gap-4
+                                    py-4
+                                    border-b
+                                    border-gray-200 dark:border-gray-700
+                                "
+                            >
+
+                                <div>
+
+                                    <h3
+                                        class="
+                                            font-semibold
+                                            text-gray-900 dark:text-white
+                                        "
+                                    >
+
+                                        {{ $meal->food_name }}
+
+                                    </h3>
+
+                                    <div
+                                        class="
+                                            flex flex-wrap gap-3
+                                            mt-2
+                                            text-sm
+                                            text-gray-500
+                                        "
+                                    >
+
+                                        <span>
+
+                                            Protein: {{ $meal->protein }}g
+
+                                        </span>
+
+                                        <span>
+
+                                            Carbs: {{ $meal->carbs }}g
+
+                                        </span>
+
+                                        <span>
+
+                                            Fat: {{ $meal->fat }}g
+
+                                        </span>
+
+                                    </div>
+
+                                </div>
+
+                                <div
+                                    class="
+                                        text-right
+                                        text-red-500
+                                        font-bold
+                                    "
+                                >
+
+                                    {{ $meal->calories }} kcal
+
+                                </div>
+
+                            </div>
+
+                        @empty
+
+                            <p class="text-gray-400">
+
+                                {{ $section['empty'] }}
+
+                            </p>
+
+                        @endforelse
+
+                    </div>
+
+                @endforeach
 
             </div>
 
         </div>
 
     </div>
+
+    <style>
+
+        .dashboard-input {
+            @apply rounded-2xl bg-gray-100 dark:bg-gray-700 dark:text-white border-0 px-5 py-3 focus:ring-2 focus:ring-green-500;
+        }
+
+    </style>
 
 </x-app-layout>
