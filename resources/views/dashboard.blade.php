@@ -196,7 +196,23 @@
                             ⚖️ Log Weight
 
                         </button>
+<a
+    href="/logs"
 
+    class="
+        px-5 py-3
+        bg-orange-500 hover:bg-orange-600
+        text-white
+        rounded-2xl
+        font-semibold
+        shadow-lg
+        transition
+    "
+>
+
+    📚 Logs
+
+</a>
                     </div>
 
                 </div>
