@@ -5,10 +5,23 @@
 
         $user = auth()->user();
 
-        $heightInMeters = $user->height / 100;
+       $height =
+    $user->height ?? 0;
 
-        $bmi = ($currentWeight ?? $user->weight)
-            / ($heightInMeters * $heightInMeters);
+$weight =
+    $currentWeight
+    ?? $user->weight
+    ?? 0;
+
+$heightInMeters =
+    $height > 0
+    ? $height / 100
+    : 0;
+
+$bmi =
+    $heightInMeters > 0
+    ? $weight / ($heightInMeters * $heightInMeters)
+    : 0;
 
         $caloriesPercentage =
             $targetCalories > 0
@@ -444,7 +457,7 @@
 
                     <h2 class="mt-4 text-4xl font-bold text-blue-500">
 
-                        {{ $currentWeight ?? $user->weight }}
+                        {{ $currentWeight ?? $user->weight ?? '--' }}
 
                         <span class="text-xl">
 
@@ -473,7 +486,7 @@
 
                     <h2 class="mt-4 text-4xl font-bold text-green-500">
 
-                        {{ $user->height }}
+                        {{ $user->height ?? '--' }}
 
                         <span class="text-xl">
 
@@ -494,17 +507,77 @@
                     "
                 >
 
-                    <p class="text-gray-500 dark:text-gray-400">
+                   @php
 
-                        BMI Score
+    $bmiStatus = 'Unknown';
 
-                    </p>
+    $bmiColor = 'text-gray-400';
 
-                    <h2 class="mt-4 text-4xl font-bold text-purple-500">
+    if ($bmi > 0 && $bmi < 18.5) {
 
-                        {{ round($bmi, 1) }}
+        $bmiStatus = 'Underweight';
 
-                    </h2>
+        $bmiColor = 'text-yellow-500';
+    }
+
+    elseif ($bmi >= 18.5 && $bmi < 25) {
+
+        $bmiStatus = 'Normal';
+
+        $bmiColor = 'text-green-500';
+    }
+
+    elseif ($bmi >= 25 && $bmi < 30) {
+
+        $bmiStatus = 'Overweight';
+
+        $bmiColor = 'text-orange-500';
+    }
+
+    elseif ($bmi >= 30) {
+
+        $bmiStatus = 'Obese';
+
+        $bmiColor = 'text-red-500';
+    }
+
+@endphp
+
+<p class="text-gray-500 dark:text-gray-400">
+
+    BMI Score
+
+</p>
+
+<div class="mt-4 flex items-end gap-3">
+
+    <h2
+        class="
+            text-5xl
+            font-bold
+            text-purple-500
+            leading-none
+        "
+    >
+
+        {{ round($bmi, 1) }}
+
+    </h2>
+
+    <span
+        class="
+            mb-1
+            text-xl
+            font-semibold
+            {{ $bmiColor }}
+        "
+    >
+
+        {{ $bmiStatus }}
+
+    </span>
+
+</div>
 
                 </div>
 
