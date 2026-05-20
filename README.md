@@ -1,58 +1,355 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# NutriTrack 🥗📊
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A modern full-stack nutrition tracking and health analytics web application built with Laravel and Tailwind CSS.
 
-## About Laravel
+NutriTrack helps users:
+- track daily meals
+- monitor calories & macros
+- log body weight
+- calculate BMI
+- analyze nutrition history
+- monitor fitness progress
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+# 🚀 Features
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## 🔍 Smart Food Search
+- USDA FoodData Central API integration
+- Real nutrition data
+- Fast food search
+- Search suggestions
+- Exact food prioritization
 
-## Learning Laravel
+---
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## 🍽️ Meal Tracking
+Users can:
+- add meals from food search
+- manually add custom meals
+- categorize meals:
+  - breakfast
+  - lunch
+  - dinner
+  - snacks
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+Stored nutrition:
+- calories
+- protein
+- carbs
+- fats
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+---
 
-## Agentic Development
+## 📊 Nutrition Dashboard
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+Professional analytics dashboard featuring:
+
+### Daily Nutrition Tracking
+- Calories consumed
+- Protein intake
+- Carb intake
+- Fat intake
+
+### Goal Progress
+- Dynamic macro progress bars
+- Percentage completion tracking
+
+### Body Metrics
+- Current weight
+- Height
+- BMI score
+- BMI classification:
+  - Underweight
+  - Normal
+  - Overweight
+  - Obese
+
+---
+
+## ⚖️ Weight Logging
+Users can:
+- log body weight daily
+- track progress over time
+- maintain historical records
+
+---
+
+## 📚 Nutrition Logs System
+Historical tracking system allowing users to:
+- select previous dates
+- view meals from that day
+- view nutrition totals
+- view weight history
+- monitor long-term progress
+
+---
+
+## 🌙 Modern UI
+- Responsive SaaS-style dashboard
+- Dark mode support
+- Tailwind CSS design system
+- Mobile-friendly layout
+- Modern analytics cards
+
+---
+
+# 🛠️ Tech Stack
+
+## Backend
+- Laravel 12
+- PHP 8+
+- MySQL
+
+## Frontend
+- Blade Templates
+- Tailwind CSS
+- JavaScript
+
+## APIs
+- USDA FoodData Central API
+
+---
+
+# 📂 Project Structure
+
+## Controllers
+
+| Controller | Purpose |
+|---|---|
+| FoodController | Food search & API integration |
+| DashboardController | Dashboard analytics |
+| MealController | Store meals |
+| LogsController | Historical nutrition logs |
+| WeightLogController | Weight tracking |
+
+---
+
+## Models
+
+| Model | Purpose |
+|---|---|
+| User | Authentication & profile |
+| Meal | Meal storage |
+| WeightLog | Weight tracking |
+
+---
+
+# 🗄️ Database Tables
+
+| Table | Purpose |
+|---|---|
+| users | User accounts |
+| meals | Nutrition & meals |
+| weight_logs | Daily weight logs |
+| sessions | Laravel session management |
+| migrations | Migration tracking |
+
+---
+
+# ⚙️ Installation
+
+## 1. Clone Repository
 
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+git clone <repo-url>
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+---
 
-## Contributing
+## 2. Enter Project
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```bash
+cd NutriTrack
+```
 
-## Code of Conduct
+---
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## 3. Install Dependencies
 
-## Security Vulnerabilities
+```bash
+composer install
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+---
 
-## License
+## 4. Install Node Modules
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+```bash
+npm install
+```
+
+---
+
+## 5. Configure Environment
+
+```bash
+cp .env.example .env
+```
+
+---
+
+## 6. Generate App Key
+
+```bash
+php artisan key:generate
+```
+
+---
+
+## 7. Configure Database
+
+Inside `.env`
+
+```env
+DB_DATABASE=nutritrack
+DB_USERNAME=root
+DB_PASSWORD=
+```
+
+---
+
+## 8. Add USDA API Key
+
+```env
+USDA_API_KEY=your_api_key_here
+```
+
+Get API Key:
+https://fdc.nal.usda.gov/api-key-signup.html
+
+---
+
+## 9. Run Migrations
+
+```bash
+php artisan migrate
+```
+
+---
+
+## 10. Start Development Server
+
+```bash
+php artisan serve
+```
+
+---
+
+## 11. Run Vite
+
+```bash
+npm run dev
+```
+
+---
+
+# 🔑 Authentication
+
+Laravel Breeze authentication is used.
+
+Features:
+- Register
+- Login
+- Session management
+- Protected routes
+
+---
+
+# 📈 BMI Classification
+
+| BMI | Classification |
+|---|---|
+| < 18.5 | Underweight |
+| 18.5 - 24.9 | Normal |
+| 25 - 29.9 | Overweight |
+| 30+ | Obese |
+
+---
+
+# 🧠 Future Improvements
+
+Planned features:
+- AI nutrition recommendations
+- Water intake tracking
+- Workout tracking
+- Meal editing/deleting
+- Nutrition charts
+- Streak system
+- PDF reports
+- Favorite foods
+- Goal customization
+- Weekly/monthly analytics
+- Notifications system
+
+---
+
+# 👥 Team Development Notes
+
+## Important Architecture Notes
+
+### Meals are NOT deleted daily
+Meals are permanently stored in database.
+
+Dashboard only filters:
+```php
+whereDate('consumed_at', today())
+```
+
+This allows:
+- historical analytics
+- progress tracking
+- future reporting systems
+
+---
+
+## Weight Logs
+Weight logs are stored permanently.
+
+Latest weight is used as current dashboard weight.
+
+---
+
+## Dashboard Calculations
+Most analytics calculations are handled in:
+```text
+DashboardController
+```
+
+Blade views mainly focus on UI rendering.
+
+---
+
+# 📌 API Notes
+
+USDA API provides:
+- food descriptions
+- calories
+- protein
+- carbs
+- fats
+
+Images are currently not used due to inconsistent API image support.
+
+---
+
+# 🧪 Testing
+
+Recommended future testing:
+- feature tests
+- authentication tests
+- nutrition calculation tests
+- API response validation
+
+---
+
+# 🧑‍💻 Contributors
+
+Built by:
+- Sourodip Dey
+
+---
+
+# 📄 License
+
+This project is for educational and portfolio purposes.
